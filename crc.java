@@ -1,27 +1,33 @@
 import java.util.Scanner;
 
-public class crc {
+public class crc 
+{
     public static int t[] = new int[128], cs[] = new int[128], a, e, c, g[] = {1, 0, 1, 1};
     static final int n = g.length;
 
-    static void xor() {
+    static void xor() 
+    {
         for (c = 1; c < n; c++)
             cs[c] = ((cs[c] == g[c]) ? 0 : 1);
     }
 
-    static void crc() {
+    static void crc() 
+    {
         for (e = 0; e < n; e++)
             cs[e] = t[e];
-        do {
+        do 
+        {
             if (cs[0] == 1)
                 xor();
             for (c = 0; c < n - 1; c++)
                 cs[c] = cs[c + 1];
             cs[c] = t[e++];
-        } while (e <= a + n - 1);
+        } 
+        while (e <= a + n - 1);
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) 
+    {
         Scanner in = new Scanner(System.in);
         System.out.println("Enter size of dataword:");
         a = in.nextInt();
