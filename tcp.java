@@ -62,7 +62,7 @@ public class Client70 {
 
         while (true) {
             try {
-                s = new Socket("localhost", 2000);  // Connect to the server on port 2000
+                s = new Socket("localhost", 2000); 
                 OutputStream ostream = s.getOutputStream();
                 System.out.println("Enter filename");
                 Scanner input = new Scanner(System.in);
