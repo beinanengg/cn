@@ -1,31 +1,30 @@
 //Server
+import java.util.Scanner;
 import java.net.*;
 import java.io.*;
-import java.util.Scanner;
 
-public class Server70 {
+public class tcpserver {
     public static void main(String[] args) throws IOException {
         ServerSocket ss = null;
         Socket s = null;
-
+        
         try {
-            ss = new ServerSocket(2000);  // Server listens on port 2000
+            ss = new ServerSocket(2000);
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+        
         while (true) {
             try {
                 System.out.println("Server Ready....");
                 s = ss.accept();
                 System.out.println("Client Connected...");
-
+                
                 InputStream istream = s.getInputStream();
                 Scanner fread = new Scanner(new InputStreamReader(istream));
-
                 String fileName = fread.nextLine();
                 System.out.println("Reading contents of " + fileName);
-
+                
                 Scanner contentRead = new Scanner(new FileReader(fileName));
                 OutputStream ostream = s.getOutputStream();
                 PrintWriter pwrite = new PrintWriter(ostream, true);
@@ -33,17 +32,18 @@ public class Server70 {
                 while (contentRead.hasNext()) {
                     pwrite.println(contentRead.nextLine());
                 }
-
                 pwrite.close();
-            } catch (FileNotFoundException e) {
+                s.close();
+                fread.close();
+                contentRead.close();
+            } 
+            catch (FileNotFoundException e) {
                 System.out.println("File Not Found");
                 OutputStream ostream = s.getOutputStream();
                 PrintWriter pwrite = new PrintWriter(ostream, true);
-                pwrite.println("File Not Found");
-                pwrite.close();            } finally {
-                if (s != null) {
-                    s.close();
-                }
+                System.out.println("File Not Found");
+                pwrite.close();
+                ss.close();
             }
         }
     }
@@ -56,32 +56,41 @@ import java.net.*;
 import java.io.*;
 import java.util.Scanner;
 
-public class Client70 {
+public class tcpclient {
     public static void main(String[] args) {
         Socket s;
-
         while (true) {
             try {
-                s = new Socket("172.20.170.29", 2000);  // Connect to the server on port 2000
+                s = new Socket("localhost", 2000);
                 OutputStream ostream = s.getOutputStream();
                 System.out.println("Enter filename");
                 Scanner input = new Scanner(System.in);
                 String fname = input.nextLine();
-
+                if(fname == "END"){
+                    System.out.println("Ending...");
+                    input.close();
+                    System.exit(0);
+                }
                 PrintWriter pwrite = new PrintWriter(ostream, true);
                 pwrite.println(fname);
-
+                
                 InputStream istream = s.getInputStream();
                 Scanner cRead = new Scanner(new InputStreamReader(istream));
-
-                while (cRead.hasNext()) {
-                    System.out.println(cRead.nextLine());
+                
+                if (cRead.hasNext()) {
+                    while (cRead.hasNext()) {
+                        System.out.println(cRead.nextLine());
+                    }
+                } else {
+                    System.out.println("No content received from server.");
                 }
-
                 pwrite.close();
+                cRead.close();
                 s.close();
+
             } catch (Exception e) {
-                e.printStackTrace();
+                System.out.println("File Reading Ended...");
+                System.exit(0);
             }
         }
     }
