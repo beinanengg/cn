@@ -56,7 +56,7 @@ import java.net.*;
 import java.io.*;
 import java.util.Scanner;
 
-public class Client70 {
+public class tcpclient {
     public static void main(String[] args) {
         Socket s;
 
